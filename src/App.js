@@ -1,25 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import Intro from "./pages/intro";
+import {BrowserRouter} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import Main from "./pages/main";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+//todo сделать компонент функциональным
+class App extends React.Component {
+  render() {
+    return (
+        <BrowserRouter basename="/">
+            <Routes>
+                {/*//fixme здесь, скорее всего, exact не понадобится*/}
+                <Route exact path="/intro" element={<Intro/>}/>
+                <Route path="/main" element={<Main/>}/>
+            </Routes>
+
+        </BrowserRouter>
+    )
+  }
 }
 
 export default App;
