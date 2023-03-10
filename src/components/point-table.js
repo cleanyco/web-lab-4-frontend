@@ -1,7 +1,7 @@
 import {useSelector} from "react-redux";
 import {Table} from "react-toolbox";
 import {TableCell, TableHead, TableRow} from "react-toolbox/lib/table";
-import {getPoints} from "../utils/point";
+import {getPoints} from "../redux/point-slice";
 
 export default function PointTable() {
     const points = useSelector(getPoints);

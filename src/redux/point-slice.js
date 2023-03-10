@@ -18,4 +18,4 @@ export const pointSlice = createSlice({
 export const {setPoints, addPoint} = pointSlice.actions;
 export const getPoints = state => state.pointsState.points;
 
-export default pointSlice.reducer;
+// export default pointSlice.reducer;
