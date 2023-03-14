@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { useNavigate } from "react-router-dom"
-import {heliosHost, isLoggenIn, login, signup} from "../request/user-request";
+import {login, signup} from "../request/user-request";
+import '../style/intro.css'
 export default function Intro() {
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
@@ -20,26 +21,46 @@ export default function Intro() {
         setTime(localTime);
         setDate(localDate);
     }
-    //fixme добавить простую валидацию
+
+    const checkUsername = (username) => {
+        if (!username.length > 4) {
+            setMessage('Username must be longer than 4 characters!')
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    const checkPassword = (password) => {
+        if (!password.length > 4) {
+            setMessage('Password must be longer than 4 characters!')
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     const handleLogin = (e) => {
         e.preventDefault();
 
         setMessage('');
 
-        login(username, password).then(resp => {
-            if (resp.ok) {
-                localStorage.setItem('username', username);
-                localStorage.setItem('password', password);
-                navigate('/main');
-            }
-        })
+        if (checkUsername(username) && checkPassword(password)) {
+            login(username, password).then(resp => {
+                if (resp.ok) {
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('password', password);
+                    navigate('/main');
+                }
+            })
+        }
     }
-    //fixme добавить простую валидацию
+
     const handleSignUp = (e) => {
         e.preventDefault();
 
         setMessage('');
-        if (localStorage.getItem('username') !== null && localStorage.getItem('password') !== null) {
+        if (localStorage.getItem('username') == null && localStorage.getItem('password') == null) {
             signup(username, password).then(resp => {
                 if (resp.ok) {
                     localStorage.setItem('username', username);
@@ -48,8 +69,7 @@ export default function Intro() {
                 }
             })
         } else {
-            //fixme изменить на вывод сообщнеия об ошибке в специальный div элемент
-            alert('одновременно может быть щарегистрирован только один пользователь!')
+            setMessage('Multiple users are not allowed to login at the same time!');
         }
     }
 
@@ -58,15 +78,6 @@ export default function Intro() {
         refreshClock();
     })
 
-    const checkSession = () => {
-        fetch('http://localhost:8080/checksession').then(resp => {
-            if (!resp.ok) {
-                localStorage.clear();
-                navigate('/intro');
-            }
-        })
-    }
-
     window.onload = function() {
         if (localStorage.getItem('username') !== null && localStorage.getItem('password') !== null) {
             login(localStorage.getItem('username'), localStorage.getItem('password')).then(resp => {
@@ -74,6 +85,7 @@ export default function Intro() {
                         navigate('/main')
                     } else {
                         navigate('/intro')
+                        localStorage.clear();
                     }
                 }
             )
@@ -81,7 +93,7 @@ export default function Intro() {
     }
 
     return (
-        <div className="Intro">
+        <div className="intro">
             <div>
                 <div className="intro_header">Чесноков Аркадий Александрович P32111 14156</div>
                 <div className="intro_container">
@@ -89,17 +101,20 @@ export default function Intro() {
                 </div>
             </div>
 
-            <div className="intro_form">
-                <input type="text" placeholder="username"
-                       value={username} onChange={e => setUsername(e.target.value)}/>
-                <input type="password" placeholder="password"
-                       value={password} onChange={e => setPassword(e.target.value)}/>
-                <div className="intro_reg">
-
+            <div className={"intro__form"}>
+                <div className={"intro__input"}>
+                    username
+                    <input type="text"
+                           onChange={e => setUsername(e.target.value)}/>
+                    password
+                    <input type="password"
+                           onChange={e => setPassword(e.target.value)}/>
                     <button onClick={handleSignUp}>Зарегистрироваться</button>
-                        <button onClick={handleLogin}>Войти</button>
+                    <button onClick={handleLogin}>Войти</button>
+                    {/*<div style="position: absolute">{message}</div>*/}
                 </div>
-            </div>
+                <img src={require("../style/ice-king.png")} className="ice-king-sticker" alt={"ice-king-sticker"}/>
+                </div>
         </div>
     )
 }

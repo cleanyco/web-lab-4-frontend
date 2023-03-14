@@ -1,8 +1,8 @@
 import React from 'react';
-import Intro from "./pages/intro";
+import Intro from "./page/intro";
 import {BrowserRouter} from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
-import Main from "./pages/main";
+import Main from "./page/main";
 
 //todo сделать компонент функциональным
 class App extends React.Component {

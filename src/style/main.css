@@ -1,0 +1,72 @@
+body {
+    background-image: url("ice-kingdom.jpg");
+    background-attachment: scroll;
+    background-size: cover;
+}
+
+.main__container {
+    width: 900px;
+    height: 500px;
+
+    position: absolute;
+    left: 350px;
+    top: 100px;
+
+    background-color: #96cdff;
+}
+
+.main__header {
+    background-color: aliceblue;
+    display: inline;
+
+    font-family: sans-serif;
+
+    padding: 4px;
+}
+
+.main__form {
+    position: absolute;
+
+    width: 370px;
+    height: 400px;
+
+    padding: 15px;
+}
+
+.main__coord img {
+    width: 400px;
+    height: 400px;
+
+    left: 485px;
+    top: 15px;
+
+    position: absolute;
+}
+
+.interactive_element {
+    position: absolute;
+
+    width: 400px;
+    height: 400px;
+
+    left: 485px;
+    top: 15px;
+
+    z-index: 10;
+}
+
+.main__table {
+    position: absolute;
+
+    background-color: #96cdff;
+
+    width: 900px;
+    height: 500px;
+
+    top: 550px
+}
+
+.main__logout {
+    position: absolute;
+    top: 450px;
+}

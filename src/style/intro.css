@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap');
+
+.intro {
+    font-family: 'Roboto', sans-serif;
+}
+
+.intro__form {
+    background-color: #96cdff;
+    border: 2px solid black;
+
+    width: 1000px;
+    height: 500px;
+
+    position: absolute;
+    top: 100px;
+    left: 300px;
+
+    z-index: 2;
+}
+
+.intro__input {
+    display: block;
+
+    width: 180px;
+    height: 150px;
+    padding: 30px;
+
+    font-size: x-large;
+}
+
+.ice-king-sticker {
+    width: 200px;
+    height: 200px;
+
+    position: absolute;
+
+    top: 300px;
+    right: 750px;
+
+    z-index: 2;
+}

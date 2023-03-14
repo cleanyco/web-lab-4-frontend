@@ -2,7 +2,6 @@ import {useState} from "react";
 
 export const heliosHost = "http://localhost:8080"
 
-export var isLoggenIn;
 
 export function signup(username, password) {
     return fetch(heliosHost + '/signup', {

@@ -1,27 +1,31 @@
-import { useDispatch} from "react-redux"
-import {clearPoints, sendPoint} from "../utils/point"
-import {addPoint, setPoints} from "../redux/point-slice"
-import { Input } from "react-toolbox/lib/input"
-//todo добавить описание полей ввода! (Введите то-то-...)
-//todo добавить вывод сообщений об ошибке
+import {sendPoint} from "../utils/point"
+import Input  from "react-toolbox/lib/input"
+import {useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import store, {saveRadius} from "../redux/store";
+
+
 export default function CoordinateForm() {
     const dispatch = useDispatch();
-    //fixme сделать нормальную декларацию
+    const [message, setMessage] = useState();
+
+    let messageRef = useRef();
     let y = null;
 
-    //todo задать дополнительные проверки
-    //todo не забывает, что X = это массив
     const validateX = (x) => {
         return (x.length > 0);
     }
-    //todo сделать обработку числа с большой точностью
-    //todo задать дополнительные проверки
+
     const validateY = (y) => {
-        return ((y != null) && (parseFloat(y) > -5) && (parseFloat(y) < 3));
+        return ((y != null) && (parseFloat(y.trim().replace(',', '.')) > -5) && (parseFloat(y.trim().replace(',', '.')) < 3));
     }
-    //todo задать дополнительные проверки
-    //todo не забывает, что R = это массив
+    //fixme запретить выбирать отрицательный радиус
     const validateR = (r) => {
+        r.forEach((radius) => {
+            if (radius < 0) {
+                return false;
+            }
+        })
         return (r.length > 0);
     }
 
@@ -34,30 +38,21 @@ export default function CoordinateForm() {
 
         console.log(y);
 
-        checkedX.forEach(x => {
-            checkedR.forEach(r => {
-                sendPoint(parseFloat(x), parseFloat(y), parseFloat(r)).then(resp => {
-                    if (resp.ok) {
-                        resp.json().then(point => {
-                            alert('запрос был успешно отправлен')
-                            dispatch(addPoint(point))
-                        })
-                    } else {
-                        alert('не отправилось :(')
-                    }
+        if (validate) {
+            setMessage('');
+            checkedX.forEach(x => {
+                checkedR.forEach(r => {
+                    sendPoint(parseFloat(x), parseFloat(y.trim().replace(',', '.')), parseFloat(r)).then(resp => {
+                        if (!resp.ok) {
+                            //fixme это для дебага, убрать
+                            alert('Не отправилось :(');
+                        }
+                    })
                 })
             })
-        })
-    }
-
-    const clearGraph = (e) => {
-        e.preventDefault();
-
-        clearPoints().then(resp => {
-            if (resp.ok) {
-                dispatch(setPoints([]));
-            }
-        })
+        } else {
+            setMessage('Incorrect Coordinates!')
+        }
     }
 
     let checkedX = [];
@@ -72,7 +67,6 @@ export default function CoordinateForm() {
                 checkedX.splice(idx, 1);
             }
         }
-        console.log(checkedX);
     }
 
     let checkedR = [];
@@ -81,18 +75,21 @@ export default function CoordinateForm() {
 
         if (isChecked) {
             checkedR.push(e.target.value)
+            store.dispatch(saveRadius(checkedR));
         } else {
             let idx = checkedR.indexOf(e.target.value);
             if (idx !== -1) {
                 checkedR.splice(idx, 1);
+                store.dispatch(saveRadius(checkedR));
             }
         }
-        console.log(checkedR);
     }
-    //fixme добавить необходимые проверки
+
     return (
         <div className="coordinate__form">
-            {/*//fixme сделать нормальные отступы с помощью css*/}
+            <fieldset>
+            Check X!
+            <br/>
             <input type={"checkbox"} value={-5} onChange={handleX}/> -5
             <input type={"checkbox"} value={-4} onChange={handleX}/> -4
             <input type={"checkbox"} value={-3} onChange={handleX}/> -3
@@ -102,24 +99,20 @@ export default function CoordinateForm() {
             <input type={"checkbox"} value={1} onChange={handleX}/> -1
             <input type={"checkbox"} value={2} onChange={handleX}/> -2
             <input type={"checkbox"} value={3} onChange={handleX}/> -3
-            <br/> <br/>
-            {/*{*/}
-            {/*    isY === false ?*/}
-            {/*        <label>Y должен быть в диапазоне (-3; 5) </label> :*/}
-            {/*        <label>Введите Y, пжлста</label>*/}
-            {/*}*/}
+            </fieldset>
+            <br/>
             {/*fixme убрать ограничение по вводу текста*/}
-            {/*fixme вернуть сюда функцию*/}
+            <fieldset>
+            Type Y!
+            <br/>
             <input type="text" maxLength={16} onChange={(e) => {
                 y = e.target.value;
             }}/>
-            <br/> <br/>
-            {/*{*/}
-            {/*    isR === false ?*/}
-            {/*        <label>Да тут даже отрицательный радиус можно сделать, ЧТО МОЖНО БЫЛО СЛОМАТЬ</label> :*/}
-            {/*        <label>Выберите значение R</label>*/}
-            {/*}*/}
-            <label>Выберите значние R</label>
+            </fieldset>
+            <br/>
+            <fieldset>
+            Check R!
+            <br/>
             <input type={"checkbox"} value={-3} onChange={handleR}/> -3
             <input type={"checkbox"} value={-2} onChange={handleR}/> -2
             <input type={"checkbox"} value={-1} onChange={handleR}/> -1
@@ -129,9 +122,12 @@ export default function CoordinateForm() {
             <input type={"checkbox"} value={3} onChange={handleR}/> 3
             <input type={"checkbox"} value={4} onChange={handleR}/> 4
             <input type={"checkbox"} value={5} onChange={handleR}/> 5
-            <br/> <br/>
+            </fieldset>
+            <br/>
+            {/*<div style="font-size: smaller">{message}</div>*/}
+            <br/>
+            //FIXME убрать компоненты из toolbox, заменить обычными компонентами
             <Input type="button" className="btn_submit" value="FEUER FREI!" onClick={sendForm} />
-            <Input type="button" className="btn_clear" value="Очистить :з" onClick={clearGraph} />
         </div>
     )
 }

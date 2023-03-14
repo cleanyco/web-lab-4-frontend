@@ -1,10 +1,26 @@
-import {configureStore} from "@reduxjs/toolkit"
-import {coordinateSlice} from "./coordinate-slice";
-import {pointSlice} from "./point-slice";
+import {createStore} from "@reduxjs/toolkit";
 
-export default configureStore({
-    reducer: {
-        coordinateState: coordinateSlice.reducer,
-        pointsState: pointSlice.reducer
+const initialState = {
+    r: []
+}
+
+const SAVE_RADIUS = 'SAVE_RADIUS';
+
+export const saveRadius = (r) => ({
+    type: SAVE_RADIUS,
+    payload: r
+})
+
+const reducer = (state = initialState, action) => {
+    switch (action.type) {
+        case SAVE_RADIUS: return {
+            r: action.payload
+        }
+
+        default: return state;
     }
-});
+}
+
+const store = createStore(reducer);
+
+export default store;
