@@ -9,8 +9,6 @@ import InteractiveElement from "../component/interactive-element";
 export default function Main() {
     const navigate = useNavigate();
 
-    //можно переписать через useEffect(() => {doStuff}, []) - это выполнится один раз при создании компонента
-
     window.onload = function() {
         if (localStorage.getItem('username') !== null && localStorage.getItem('password') !== null) {
             login(localStorage.getItem('username'), localStorage.getItem('password')).then(resp => {
@@ -36,9 +34,9 @@ export default function Main() {
         })
     }
 
-    useEffect(() => {
-        setInterval(checkSession, 5000)
-    })
+    // useEffect(() => {
+    //     setInterval(checkSession, 10000)
+    // })
 
     const handleLogout = () => {
         localStorage.clear();

@@ -14,7 +14,7 @@ export const saveRadius = (r) => ({
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case SAVE_RADIUS: return {
-            r: action.payload
+         ...state, r: action.payload
         }
 
         default: return state;

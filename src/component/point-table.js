@@ -1,9 +1,7 @@
-import {useSelector} from "react-redux";
 
-//вторник 10:00 304 кабинет
-//fixme сделать нормальный селектор, используя Redux
+
 import {useEffect, useState} from "react";
-import {Table} from "./simple-table";
+import '../style/point-table.css'
 
 export default function PointTable() {
     const [dataTable, setDataTable] = useState([]);
@@ -14,6 +12,10 @@ export default function PointTable() {
     ]
 
     useEffect(() => {
+        setInterval(getPoints, 2000);
+    })
+
+    const getPoints = () => {
         fetch('http://localhost:8080/getpoints', {
             method: 'GET',
             headers: {
@@ -21,15 +23,34 @@ export default function PointTable() {
             },
             credentials: 'include'
         }).then((data) => data.json())
-          .then((data) => {
-              setDataTable(data)})
-    })
-
-
+            .then((data) => {
+                setDataTable(data)})
+    }
 
     return (
-        <div className={"main__table"}>
-            <Table data={dataTable} column={column}/>
+        <div>
+            <table className={"hit__table"}>
+                <tr>
+                    <th>X</th>
+                    <th>Y</th>
+                    <th>R</th>
+                    <th>HIT</th>
+                    <th>EXEC-TIME</th>
+                    <th>CUR-TIME</th>
+                </tr>
+                {dataTable.map((val, key) => {
+                    return (
+                        <tr key={key}>
+                            <td>{val.x}</td>
+                            <td>{val.y}</td>
+                            <td>{val.r}</td>
+                            <td>{val.hit}</td>
+                            <td>{val.execTime}</td>
+                            <td>{val.curTime}</td>
+                        </tr>
+                    )
+                })}
+            </table>
         </div>
     )
 }
